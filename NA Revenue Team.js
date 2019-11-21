@@ -76,6 +76,14 @@
       {
         "id": "8",
         "name": "SF1CA"
+      },
+	    {
+        "id": "9",
+        "name": "Man Line Cancel"
+      },
+      {
+        "id": "10",
+        "name": "Set Date"
       }
     ],
     "rules": [
@@ -110,6 +118,14 @@
       {
         "code": "var rules = [{\n  url: /https:\\/\\/redhat\\.revstreamcloud\\.com\\/ords\\/f\\?p=24104:411:[0-9]+::NO:411:P411_RS_JC_CHAIN_ID:521/,\n  \"name\": \"Streamflow1CA\",\n  \"before\": function(resolve, context) {\n    var dir = prompt(\"Please enter the arrangement number\", dir);\n    if( dir === null ){resolve(Libs.halt(\"Streamflow Cancelled\"));}\n    context.storage.set(\"ArrNum\", dir);\n    resolve();\n  },\n  \"fields\": [{\n    \"selector\": \"#RS_P411_6_ARRANGEMENT_NUM\",\n    \"value\": function($e, data) {\n      return context.storage.get(\"ArrNum\");\n    }\n  }, {\n    \"selector\": \"#RS_P411_1_ORG_ID\",\n    \"value\": \"92\"\n  }, {\n    \"selector\": \"#RS_P411_7_DEBUG_1\",\n    \"value\": \"N\"\n  }, {\n    \"selector\": \"button[id=B537068299028464869]\",\n    \"value\": function($e, data) {\n      $e.trigger(\"click\");\n    }\n  }]\n}\n];",
         "tabId": 8
+      },
+	    {
+        "code": "var rules = [{\n  \"name\": \"Man Line Cancel\",\n  url: /.*redhat\\.revstreamcloud\\.com\\/ords\\/f\\?p=24104:360:[0-9]+::NO:.*/,\n  \"fields\": [{\n    \"selector\": \"#P360_LINE_DESCRIPTION\",\n    \"value\": function($e, data){\n      var current = $e.val();   // Read the current fields content\n      if( current ){\n        return current;\n      }\n      return \"Manually Adjusted\";\n    }\n  },\n  {\n    \"selector\": \"#P360_QUANTITY\",\n    \"value\": \"0\"\n  },\n  {\n    \"selector\": \"#P360_UNIT_SELLING_PRICE\",\n    \"value\": \"0\"\n  },\n  {\n    \"selector\": \"#P360_ADJ_REASON\",\n    \"value\": \"RETROSPECTIVE LINE TERMINATION\"\n  },\n  {\n    \"selector\": \"#P360_ADJ_EFFECTIVE_DATE\",\n    \"value\": function($e, data) {\n      return context.storage.get(\"AdjDate\");\n    }\n  },\n  {\n    \"selector\": \"button[id=B205500123518793535]\",\n    \"value\": function($e, data) {\n      $e.trigger(\"click\");\n    }\n  }]\n}];",
+        "tabId": 9
+      },
+      {
+        "code": "var rules = [{\n    \"name\": \"Set Date\",\n    url: /.*redhat\\.revstreamcloud\\.com\\/ords\\/f\\?p=24104:360:[0-9]+::NO:.*/,\n  \"before\": function(resolve, context) {\n    var dir = prompt(\"Please enter Adjustment Date\", dir);\n    if( dir === null ){\n      resolve(Libs.halt(\"Cancelled\"));\n    }\n    context.storage.set(\"AdjDate\", dir);\n    resolve();\n  }  \n}];",
+        "tabId": 10
       }
     ]
   }
